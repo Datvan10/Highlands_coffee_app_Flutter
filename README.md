@@ -1,6 +1,8 @@
 # highlandcoffeeapp
 
 A new Flutter project.
+![highlandscoffee](https://github.com/Datvan10/Highlands_coffee_app_Flutter/assets/73633074/35b096d7-d5f5-4d49-ab4c-e00c9db15a82)
+
 
 ## Getting Started
 

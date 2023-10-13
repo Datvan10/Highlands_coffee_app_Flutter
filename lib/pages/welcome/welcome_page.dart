@@ -14,7 +14,7 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     // TODO: implement initState
-    var d = Duration(seconds: 5);
+    var d = Duration(seconds: 60);
     Future.delayed(d, () {
       Get.offAll(() => IntroducePage1());
     });
