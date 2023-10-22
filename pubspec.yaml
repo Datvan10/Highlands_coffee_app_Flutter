@@ -40,6 +40,9 @@ dependencies:
   google_fonts: ^6.1.0
   smooth_page_indicator: ^1.1.0
   carousel_slider: ^4.2.1
+  firebase_auth: ^4.10.1
+  firebase_core: ^2.17.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -65,11 +68,16 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/images/
+    - assets/icons/
     - assets/images/welcome/
-    - assets/images/coffee/
     - assets/images/slide/
+    - assets/images/coffee/
+    - assets/images/cake/
+    - assets/images/bread/
     - assets/images/freeze/
     - assets/images/tea/
+    - assets/images/detail/
     # - 
 
   # An image asset can refer to one or more resolution-specific "variants", see

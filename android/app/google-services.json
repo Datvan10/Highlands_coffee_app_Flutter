@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "263170429496",
+    "project_id": "highlandscoffee-17fe9",
+    "storage_bucket": "highlandscoffee-17fe9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263170429496:android:b2f78b674339516e81cccd",
+        "android_client_info": {
+          "package_name": "com.example.highlandcoffeeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC5lcIMUPsnL7D-waMHUyE8cBg9fGH0zY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,7 +22,7 @@ class _ProductTypeState extends State<ProductType> {
       },
       child: Container(
         height: 25,
-        width: 60,
+        width: 70,
         decoration: BoxDecoration(
           color: isPressed ? primaryColors : white,
           borderRadius: BorderRadius.circular(18.0),
@@ -33,6 +33,7 @@ class _ProductTypeState extends State<ProductType> {
             widget.titleProduct,
             style: TextStyle(
               color: isPressed ? white : primaryColors,
+              fontWeight: FontWeight.bold
             ),
           ),
         ),
