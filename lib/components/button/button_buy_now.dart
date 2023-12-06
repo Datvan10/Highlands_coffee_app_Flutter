@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 
 class ButtonBuyNow extends StatelessWidget {
@@ -23,7 +24,7 @@ class ButtonBuyNow extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              style: TextStyle(color: white, fontWeight: FontWeight.bold, fontSize: 15.0),
+              style: GoogleFonts.arsenal(color: white, fontWeight: FontWeight.bold, fontSize: 19),
             ),
           ),
         ),

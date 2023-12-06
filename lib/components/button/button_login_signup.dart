@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 
 class ButtonLoginSigninUp extends StatelessWidget {
@@ -23,7 +24,7 @@ class ButtonLoginSigninUp extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              style: TextStyle(color: white, fontWeight: FontWeight.bold, fontSize: 15.0),
+              style: GoogleFonts.roboto(color: white, fontWeight: FontWeight.bold, fontSize: 16.0),
             ),
           ),
         ),

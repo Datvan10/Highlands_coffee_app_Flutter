@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:highlandcoffeeapp/components/button/button_next.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
@@ -24,29 +23,29 @@ class IntroducePage1 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(hello,
-                style: GoogleFonts.playfairDisplay(
-                  color: black_red,
+                style: GoogleFonts.arsenal(
+                  color: black,
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 )),
             Image.asset(imagePath),
             Text(title,
-                style: TextStyle(
-                    color: brown, fontSize: 20, fontStyle: FontStyle.italic)),
-            SizedBox(
+                style: GoogleFonts.arsenal(
+                    color: brown, fontSize: 25, fontStyle: FontStyle.italic)),
+            const SizedBox(
               height: 10,
             ),
             Text(
               description,
-              style: TextStyle(fontSize: 15, color: Colors.grey),
+              style: GoogleFonts.arsenal(fontSize: 18, color: Colors.grey),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  'SKIP',
-                  style: TextStyle(color: primaryColors),
-                ),
+                // Text(
+                //   'BACK',
+                //   style: GoogleFonts.arsenal(color: primaryColors, fontSize: 16, fontWeight: FontWeight.bold),
+                // ),
                 ButtonNext(
                     text: 'NEXT',
                     onTap: () {

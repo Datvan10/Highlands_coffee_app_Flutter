@@ -43,6 +43,10 @@ dependencies:
   firebase_auth: ^4.10.1
   firebase_core: ^2.17.0
   intl: ^0.18.1
+  speech_to_text: ^6.4.1
+  permission_handler: ^11.0.1
+  provider: ^6.1.1
+  cloud_firestore: ^4.13.3
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +77,7 @@ flutter:
     - assets/images/welcome/
     - assets/images/slide/
     - assets/images/coffee/
+    - assets/images/combo/
     - assets/images/cake/
     - assets/images/bread/
     - assets/images/freeze/

@@ -23,7 +23,7 @@ class _LoginToggleSigninupPageState extends State<LoginToggleSigninupPage> {
     if(showloginPage){
       return LoginPage(onTap: togglePage);
     }else{
-      return SignupPage(onTap: togglePage,);
+      return SignInUpPage(onTap: togglePage,);
     }
   }
 }

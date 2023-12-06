@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
             //title email
             Text(
               'Đăng nhập',
-              style: GoogleFonts.playfairDisplay(
+              style: GoogleFonts.arsenal(
                   fontSize: 30.0, fontWeight: FontWeight.bold, color: brown),
             ),
             SizedBox(
@@ -77,7 +77,6 @@ class _LoginPageState extends State<LoginPage> {
             //form email
             TextFormField(
               controller: _emailController,
-              obscureText: isObsecure,
               validator: (text) {
                 if (text == null || text.isEmpty) {
                   return 'Required Email';
@@ -148,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Text(
                   'Quên mật khẩu?',
-                  style: TextStyle(
+                  style: GoogleFonts.roboto(
                       color: blue, decoration: TextDecoration.underline),
                 )
               ],
@@ -172,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Text(
                   '      hoặc      ',
-                  style: TextStyle(color: grey),
+                  style: GoogleFonts.roboto(color: grey),
                 ),
                 Expanded(
                   child: Divider(
@@ -187,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             //or login with facebook, email, google,...
             Center(
-                child: Text('ĐĂNG NHẬP BẰNG', style: TextStyle(color: grey))),
+                child: Text('ĐĂNG NHẬP BẰNG', style: GoogleFonts.roboto(color: grey))),
             SizedBox(
               height: 20.0,
             ),
@@ -206,12 +205,12 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Chưa có tài khoản? ', style: TextStyle(color: grey)),
+                Text('Chưa có tài khoản? ', style: GoogleFonts.roboto(color: grey)),
                 GestureDetector(
                   onTap: widget.onTap,
                   child: Text(
                     'Đăng ký ngay!',
-                    style: TextStyle(
+                    style: GoogleFonts.roboto(
                         color: blue,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline),

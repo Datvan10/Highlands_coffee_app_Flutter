@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 
 class ProductType extends StatefulWidget {
   final String titleProduct;
+  final Widget destinationPage;
 
-  const ProductType({super.key, required this.titleProduct});
+  const ProductType({super.key, required this.titleProduct, required this.destinationPage});
 
   @override
   State<ProductType> createState() => _ProductTypeState();
@@ -19,6 +23,7 @@ class _ProductTypeState extends State<ProductType> {
         setState(() {
           isPressed = !isPressed;
         });
+        Get.to(widget.destinationPage);
       },
       child: Container(
         height: 25,
@@ -31,9 +36,10 @@ class _ProductTypeState extends State<ProductType> {
         child: Center(
           child: Text(
             widget.titleProduct,
-            style: TextStyle(
+            style: GoogleFonts.arsenal(
               color: isPressed ? white : primaryColors,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
+              fontSize: 14
             ),
           ),
         ),

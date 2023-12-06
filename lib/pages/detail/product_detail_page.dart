@@ -3,21 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:highlandcoffeeapp/components/button/button_add_to_cart.dart';
 import 'package:highlandcoffeeapp/components/button/button_buy_now.dart';
-import 'package:highlandcoffeeapp/models/product/products.dart';
+import 'package:highlandcoffeeapp/models/products.dart';
+import 'package:highlandcoffeeapp/pages/cart/cart_page.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 import 'package:highlandcoffeeapp/util/product/size_product.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Products product;
-  const ProductDetailPage({super.key, required this.product});
+  const ProductDetailPage({
+    super.key,
+    required this.product,
+  });
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
+class CartPageArguments {
+  final List<CartItem> cartItems;
+
+  CartPageArguments(this.cartItems);
+}
+
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantityCount = 1; //quantity
   double totalPrice = 0.0; // total price
+  bool isFavorite = false;
+  String selectedSize = 'S';
+  List<CartItem> cartItems = [];
 
   @override
   void initState() {
@@ -53,6 +66,32 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     });
   }
 
+  //
+// Trong _ProductDetailPageState
+void addToCart(String productImage, String productName, double newPrice, double totalPrice, int quantity, String selectedSize) {
+    // print('Adding to Cart: $productImage, $productName, $totalPrice, $quantity, $selectedSize');
+
+    // Tạo một đối tượng CartItem
+    CartItem item = CartItem(
+      productImage,
+      productName,
+      newPrice,
+      totalPrice,
+      quantity,
+      selectedSize
+    );
+
+    // Thêm mục vào giỏ hàng
+    setState(() {
+      cartItems.add(item);
+    });
+
+    // Gửi thông tin đến trang CartPage với danh sách cartItems đã cập nhật
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CartPage(arguments: CartPageArguments(cartItems)),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,28 +112,39 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           )),
           Expanded(
               child: Container(
-                padding: EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.only(top: 10.0),
+            decoration: BoxDecoration(color: white),
             child: Column(
               children: [
                 //product name and icon favorite
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.product.name,
-                      style: GoogleFonts.playfairDisplay(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColors),
-                    ),
-                    // IconButton(onPressed: () {}, icon: Icon(Icons.favorite))
-                    Image.asset('assets/icons/heart.png', width: 25, color: primaryColors,)
-                  ],
-                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    widget.product.name,
+                    style: GoogleFonts.arsenal(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColors),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isFavorite = !isFavorite;
+                        });
+                      },
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: primaryColors,
+                        size: 30,
+                      ))
+                ]),
                 //product image and description
                 Padding(
                   padding: const EdgeInsets.only(right: 20),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
                         widget.product.imagePath,
@@ -104,7 +154,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       Expanded(
                         child: Text(
                           widget.product.description,
-                          style: TextStyle(color: black_red, fontSize: 16),
+                          style: GoogleFonts.roboto(fontSize: 17, color: black),
                         ),
                       )
                     ],
@@ -121,14 +171,35 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     children: [
                       Text(
                         'Chọn Size',
-                        style: TextStyle(
-                            fontSize: 17,
+                        style: GoogleFonts.arsenal(
+                            fontSize: 19,
                             fontWeight: FontWeight.bold,
-                            color: brown),
+                            color: black),
                       ),
-                      SizeProducts(titleSize: 'S'),
-                      SizeProducts(titleSize: 'M'),
-                      SizeProducts(titleSize: 'L'),
+                      SizeProducts(
+                        titleSize: 'S',
+                        onSizeSelected: (selectedSize) {
+                          setState(() {
+                            this.selectedSize = selectedSize;
+                          });
+                        },
+                      ),
+                      SizeProducts(
+                        titleSize: 'M',
+                        onSizeSelected: (selectedSize) {
+                          setState(() {
+                            this.selectedSize = selectedSize;
+                          });
+                        },
+                      ),
+                      SizeProducts(
+                        titleSize: 'L',
+                        onSizeSelected: (selectedSize) {
+                          setState(() {
+                            this.selectedSize = selectedSize;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -142,49 +213,51 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     children: [
                       Text(
                         'Số lượng',
-                        style: TextStyle(
-                            fontSize: 17,
+                        style: GoogleFonts.arsenal(
+                            fontSize: 19,
                             fontWeight: FontWeight.bold,
-                            color: brown),
+                            color: black),
                       ),
-                      SizedBox(
-                        width: 50,
-                      ),
+                      SizedBox(width: 52),
                       Row(
                         children: [
                           Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                                color: primaryColors, shape: BoxShape.circle),
-                            child: GestureDetector(
-                              onTap: decrementQuantity,
-                              child: Icon(Icons.remove, size: 18, color: white,),
-                            )
-                          ),
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: primaryColors, shape: BoxShape.circle),
+                              child: GestureDetector(
+                                onTap: decrementQuantity,
+                                child: Icon(
+                                  Icons.remove,
+                                  size: 19,
+                                  color: white,
+                                ),
+                              )),
                           //quantity + count
                           SizedBox(
-                            width: 40,
+                            width: 35,
                             child: Center(
                               child: Text(
                                 quantityCount.toString(),
-                                style: TextStyle(
-                                    color: brown,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                                style: GoogleFonts.roboto(
+                                    fontSize: 17, color: black),
                               ),
                             ),
                           ),
                           Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                                color: primaryColors, shape: BoxShape.circle),
-                            child: GestureDetector(
-                              onTap: incrementQuantity,
-                              child: Icon(Icons.add, size: 18, color: white,),
-                            )
-                          )
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: primaryColors, shape: BoxShape.circle),
+                              child: GestureDetector(
+                                onTap: incrementQuantity,
+                                child: Icon(
+                                  Icons.add,
+                                  size: 19,
+                                  color: white,
+                                ),
+                              ))
                         ],
                       )
                     ],
@@ -200,20 +273,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     children: [
                       Text(
                         'Tổng tiền',
-                        style: TextStyle(
-                            fontSize: 17,
+                        style: GoogleFonts.arsenal(
+                            fontSize: 19,
                             fontWeight: FontWeight.bold,
-                            color: brown),
+                            color: black),
                       ),
                       SizedBox(
                         width: 50,
                       ),
                       Text(
                         totalPrice.toStringAsFixed(3) + 'đ',
-                        style: TextStyle(
-                            color: primaryColors,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                        style: GoogleFonts.roboto(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColors),
                       )
                     ],
                   ),
@@ -228,7 +301,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ButtonAddToCart(text: 'Thêm vào giỏ', onTap: () {}),
+                        ButtonAddToCart(
+                          text: 'Thêm vào giỏ',
+                          onTap: () {
+                            addToCart(
+                              widget.product.imagePath,
+                              widget.product.name,
+                              widget.product.newPrice,
+                              totalPrice,
+                              quantityCount,
+                              selectedSize,
+                            );
+                          },
+                        ),
                         VerticalDivider(
                           color: light_grey,
                           thickness: 1,
@@ -240,7 +325,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 )
               ],
             ),
-            decoration: BoxDecoration(color: white),
           )),
         ],
       ),

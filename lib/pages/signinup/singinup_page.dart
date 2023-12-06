@@ -5,15 +5,15 @@ import 'package:highlandcoffeeapp/components/button/button_login_signup.dart';
 import 'package:highlandcoffeeapp/components/loginwithmore/login_with_more.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 
-class SignupPage extends StatefulWidget {
+class SignInUpPage extends StatefulWidget {
   final Function()? onTap;
-  const SignupPage({super.key, required this.onTap});
+  const SignInUpPage({super.key, required this.onTap});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<SignInUpPage> createState() => _SignInUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignInUpPageState extends State<SignInUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -80,7 +80,7 @@ class _SignupPageState extends State<SignupPage> {
             //title email
             Text(
               'Đăng ký',
-              style: GoogleFonts.playfairDisplay(
+              style: GoogleFonts.arsenal(
                   fontSize: 30.0, fontWeight: FontWeight.bold, color: brown),
             ),
             SizedBox(
@@ -239,7 +239,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 Text(
                   '      hoặc      ',
-                  style: TextStyle(color: grey),
+                  style: GoogleFonts.roboto(color: grey),
                 ),
                 Expanded(
                   child: Divider(
@@ -254,7 +254,7 @@ class _SignupPageState extends State<SignupPage> {
             ),
             //or login with
             Center(
-                child: Text('ĐĂNG NHẬP BẰNG', style: TextStyle(color: grey))),
+                child: Text('ĐĂNG NHẬP BẰNG', style: GoogleFonts.roboto(color: grey))),
             SizedBox(
               height: 20.0,
             ),
@@ -273,12 +273,12 @@ class _SignupPageState extends State<SignupPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Đã có tài khoản? ', style: TextStyle(color: grey)),
+                Text('Đã có tài khoản? ', style: GoogleFonts.roboto(color: grey)),
                 GestureDetector(
                   onTap: widget.onTap,
                   child: Text(
                     'Đăng nhập ngay!',
-                    style: TextStyle(
+                    style: GoogleFonts.roboto(
                         color: blue,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline),

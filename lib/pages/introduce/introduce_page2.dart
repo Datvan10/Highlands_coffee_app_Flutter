@@ -24,28 +24,33 @@ class IntroducePage2 extends StatelessWidget {
           children: [
             Text(hello,
                 style:
-                    GoogleFonts.playfairDisplay(
-                      color: black_red,
+                    GoogleFonts.arsenal(
+                      color: black,
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),),
             Image.asset(imagePath),
             Text(title,
-                style: TextStyle(
-                    color: brown, fontSize: 20, fontStyle: FontStyle.italic)),
-            SizedBox(
+                style: GoogleFonts.arsenal(
+                    color: brown, fontSize: 25, fontStyle: FontStyle.italic)),
+            const SizedBox(
               height: 10,
             ),
             Text(
               description,
-              style: TextStyle(fontSize: 15, color: Colors.grey),
+              style: GoogleFonts.arsenal(fontSize: 18, color: Colors.grey),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'SKIP',
-                  style: TextStyle(color: primaryColors),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'BACK',
+                    style: GoogleFonts.arsenal(color: primaryColors, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 ButtonNext(text: 'NEXT', onTap: () {
                   Get.toNamed('/home_page');

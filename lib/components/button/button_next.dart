@@ -24,7 +24,7 @@ class ButtonNext extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(text, style: GoogleFonts.getFont('Roboto', color: white),)
+              Text(text, style: GoogleFonts.arsenal(color: white, fontSize: 16, fontWeight: FontWeight.bold),)
             ],
           ),
         ),

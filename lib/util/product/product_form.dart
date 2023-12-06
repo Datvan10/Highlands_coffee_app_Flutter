@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:highlandcoffeeapp/models/product/products.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:highlandcoffeeapp/models/products.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 
-class ProductPopular extends StatelessWidget {
+class ProducForm extends StatelessWidget {
   final Products product;
   final void Function()? onTap;
-  const ProductPopular({super.key, required this.product, required this.onTap});
+  const ProducForm({super.key, required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +16,6 @@ class ProductPopular extends StatelessWidget {
         padding: EdgeInsets.all(15.0),
         decoration: BoxDecoration(
             color: white, borderRadius: BorderRadius.circular(15.0)),
-        width: 185,
-        height: 250,
         child: Column(
           children: [
             //image
@@ -25,7 +24,9 @@ class ProductPopular extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
             //name product
-            Text(product.name, style: TextStyle(color: black_red, fontSize: 15),),              //price and add to Carts
+            Text(product.name, style: GoogleFonts.arsenal(color: black, fontSize: 19, fontWeight: FontWeight.bold),),
+            SizedBox(height: 3,),
+            //price and add to Carts
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -34,9 +35,10 @@ class ProductPopular extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //old price
-                    Text(product.oldPrice.toStringAsFixed(3) + 'đ', style: TextStyle( color: grey, fontSize: 15,decoration: TextDecoration.lineThrough),),
+                    Text(product.oldPrice.toStringAsFixed(3) + 'đ', style: GoogleFonts.roboto( color: grey, fontSize: 15,decoration: TextDecoration.lineThrough),),
+                    SizedBox(height: 3,),
                     //new price
-                    Text(product.newPrice.toStringAsFixed(3) + 'đ', style: TextStyle(color: primaryColors, fontSize: 16, fontWeight: FontWeight.bold),)
+                    Text(product.newPrice.toStringAsFixed(3) + 'đ', style: GoogleFonts.roboto(color: primaryColors, fontSize: 17, fontWeight: FontWeight.bold),)
                   ],
                 ),
                 //button add to carts
