@@ -6,7 +6,7 @@ import 'package:highlandcoffeeapp/themes/theme.dart';
 class ButtonAuthentication extends StatelessWidget {
   final String text;
   final Function()? onTap;
-  const ButtonAuthentication({super.key, required this.text, this.onTap});
+  const ButtonAuthentication({super.key, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

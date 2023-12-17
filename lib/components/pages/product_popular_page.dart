@@ -46,7 +46,7 @@ class _ProductPopularPageState extends State<ProductPopularPage> {
         description:
             'Sự kết hợp hoàn hảo giữa cookies sô cô la giòn xốp cùng hỗn hợp sữa tươi cùng sữa đặc đem say với đá viên, và lớp kem whip mềm mịn cùng cookies sô cô la say nhuyễn.',
         imagePath: 'assets/images/freeze/cookies-cream.jpg',
-        imageDetailPath: 'imageDetailPath',
+        imageDetailPath: 'assets/images/detail/cookies-cream-detail.jpg',
         oldPrice: 59.000,
         newPrice: 55.000,
         rating: '4.8'),
@@ -100,14 +100,17 @@ class _ProductPopularPageState extends State<ProductPopularPage> {
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                Get.toNamed('/cart_page');
-              },
-              icon: Icon(
-                Icons.shopping_cart,
-                color: primaryColors,
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: IconButton(
+                onPressed: () {
+                  Get.toNamed('/cart_page');
+                },
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: primaryColors,
+                )),
+          )
         ],
       ),
       body: Column(

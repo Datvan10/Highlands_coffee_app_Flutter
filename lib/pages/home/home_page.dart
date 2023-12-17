@@ -1,21 +1,26 @@
 import 'dart:math';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:highlandcoffeeapp/components/category/product_category.dart';
 import 'package:highlandcoffeeapp/components/pages/coffee_page.dart';
 import 'package:highlandcoffeeapp/components/pages/freeze_page.dart';
+import 'package:highlandcoffeeapp/components/pages/list_product_page.dart';
 import 'package:highlandcoffeeapp/components/pages/other_page.dart';
 import 'package:highlandcoffeeapp/components/pages/product_popular_page.dart';
 import 'package:highlandcoffeeapp/components/pages/sweet_cake_page.dart';
 import 'package:highlandcoffeeapp/components/pages/tea_page.dart';
 import 'package:highlandcoffeeapp/models/products.dart';
+import 'package:highlandcoffeeapp/pages/auth/auth_page.dart';
 import 'package:highlandcoffeeapp/pages/detail/product_detail_page.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
+import 'package:highlandcoffeeapp/util/mic/mic_form.dart';
 import 'package:highlandcoffeeapp/util/product/product_form.dart';
-import 'package:highlandcoffeeapp/util/product/product_type.dart';
-import 'package:highlandcoffeeapp/util/slide/slide_image.dart';
+import 'package:highlandcoffeeapp/util/product/product_category_form.dart';
+import 'package:highlandcoffeeapp/components/slide/slide_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,6 +32,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndexBottomBar = 0;
+  bool _isListening = false;
+  bool _isMicFormVisible = false;
   final _textSearchController = TextEditingController();
 
   //list popular product
@@ -86,6 +93,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   //
+
+  //
   Future<void> _requestMicrophonePermission() async {
     var status = await Permission.microphone.status;
     if (status.isDenied) {
@@ -101,6 +110,13 @@ class _HomePageState extends State<HomePage> {
     if (await Permission.microphone.isGranted) {
       // Quyền đã được cấp, bắt đầu lắng nghe
       // Sử dụng speech_to_text để thực hiện thu âm
+
+      Get.to(() => MicForm())?.then((value) {
+        // Xử lý sau khi người dùng đóng trang MicForm
+        setState(() {
+          _isMicFormVisible = false;
+        });
+      });
     } else {
       // Người dùng từ chối cấp quyền
       // Xử lý tương ứng, ví dụ hiển thị thông báo
@@ -136,7 +152,13 @@ class _HomePageState extends State<HomePage> {
                     Icons.mic,
                     size: 20,
                   ),
+                  focusColor: primaryColors,
                   onPressed: _startListening,
+                  // onPressed: () {
+                  //   setState(() {
+                  //     _isMicFormVisible = !_isMicFormVisible;
+                  //   });
+                  // },
                 ),
                 //icon clear
                 // suffixIcon: Padding(
@@ -174,37 +196,13 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //slide adv
-            SlideImageHomePage(
+            SlideImage(
               height: 180,
             ),
             SizedBox(height: 10),
             //product types
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ProductType(
-                  titleProduct: 'Cà phê',
-                  destinationPage: CoffeePage(),
-                ),
-                ProductType(
-                  titleProduct: 'Freeze',
-                  destinationPage: FreezePage(),
-                ),
-                ProductType(
-                  titleProduct: 'Trà',
-                  destinationPage: TeaPage(),
-                ),
-                ProductType(
-                  titleProduct: 'Bánh ngọt',
-                  destinationPage: SweetCakePage(),
-                ),
-                ProductType(
-                  titleProduct: 'Khác',
-                  destinationPage: OtherPage(),
-                )
-              ],
-            ),
-            SizedBox(height: 40),
+            ProductCategory(),
+            SizedBox(height: 20),
             //product popular
             Column(
               children: [
@@ -225,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(
-                  height: 15.0,
+                  height: 5.0,
                 ),
                 //more product popular
                 Row(
@@ -254,31 +252,55 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       //bottom bar
-      // bottomNavigationBar: BottomNavigationBar(
-      //       backgroundColor: Colors.transparent,
-      //       elevation: 0,
-      //       selectedItemColor: primaryColors,
-      //       type: BottomNavigationBarType.fixed,
-      //       currentIndex: _selectedIndexBottomBar,
-      //       onTap: _selectedBottomBar,
-      //       items: const [
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.home),
-      //           label: 'Trang chu',
-      //         ),
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.favorite),
-      //           label: 'Favorite',
-      //         ),
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.shopping_cart),
-      //           label: 'Carts',
-      //         ),
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.person),
-      //           label: 'Profile',
-      //         ),
-      //       ]),
+      bottomNavigationBar: BottomNavigationBar(
+          // backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: primaryColors,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndexBottomBar,
+          onTap: _selectedBottomBar,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: () {
+                  // Điều hướng đến trang mới ở đây
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ListProductPage(),
+                    ),
+                  );
+                },
+                child: Icon(Icons.local_dining),
+              ),
+              label: 'Products',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorite',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'Carts',
+            ),
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AuthPage(),
+                    ),
+                  );
+                },
+                child: Icon(Icons.person)),
+              label: 'Profile',
+            ),
+          ]),
     );
   }
 }

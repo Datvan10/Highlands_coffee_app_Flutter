@@ -29,7 +29,7 @@ class _FreezePageState extends State<FreezePage> {
         name: 'CLASSIC PHIN FREEZE',
         description: 'description',
         imagePath: 'assets/images/freeze/classic-phin-freeze.jpg',
-        imageDetailPath: '',
+        imageDetailPath: 'assets/images/detail/classic-phin-freeze-detail.jpg',
         oldPrice: 35.000,
         newPrice: 28.000,
         rating: '4.3'),
@@ -38,7 +38,7 @@ class _FreezePageState extends State<FreezePage> {
         description:
             'Trà xanh thượng hạng từ cao nguyên Việt Nam, kết hợp cùng đá xay, thạch trà dai dai, thơm ngon và một lớp kem dày phủ lên trên vô cùng hấp dẫn.',
         imagePath: 'assets/images/freeze/cookies-cream.jpg',
-        imageDetailPath: '',
+        imageDetailPath: 'assets/images/detail/cookies-cream-detail.jpg',
         oldPrice: 65.000,
         newPrice: 55.000,
         rating: '4.9'),
@@ -47,7 +47,7 @@ class _FreezePageState extends State<FreezePage> {
         description:
             'Sự kết hợp hoàn hảo giữa cookies sô cô la giòn xốp cùng hỗn hợp sữa tươi cùng sữa đặc đem say với đá viên, và lớp kem whip mềm mịn cùng cookies sô cô la say nhuyễn.',
         imagePath: 'assets/images/freeze/freeze-so-co-la.jpg',
-        imageDetailPath: '',
+        imageDetailPath: 'assets/images/detail/freeze-so-co-la-detail.jpg',
         oldPrice: 59.000,
         newPrice: 55.000,
         rating: '4.8'),
@@ -101,12 +101,15 @@ class _FreezePageState extends State<FreezePage> {
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.shopping_cart,
-                color: primaryColors,
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: primaryColors,
+                )),
+          )
         ],
       ),
       body: Column(

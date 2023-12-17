@@ -4,17 +4,17 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 
-class ProductType extends StatefulWidget {
+class ProductCategoryForm extends StatefulWidget {
   final String titleProduct;
   final Widget destinationPage;
 
-  const ProductType({super.key, required this.titleProduct, required this.destinationPage});
+  const ProductCategoryForm({super.key, required this.titleProduct, required this.destinationPage});
 
   @override
-  State<ProductType> createState() => _ProductTypeState();
+  State<ProductCategoryForm> createState() => _ProductCategoryFormState();
 }
 
-class _ProductTypeState extends State<ProductType> {
+class _ProductCategoryFormState extends State<ProductCategoryForm> {
   bool isPressed = false;
   @override
   Widget build(BuildContext context) {

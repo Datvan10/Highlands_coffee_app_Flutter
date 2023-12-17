@@ -83,12 +83,15 @@ class _BreadPageState extends State<BreadPage> {
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.shopping_cart,
-                color: primaryColors,
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: primaryColors,
+                )),
+          )
         ],
       ),
       body: Column(

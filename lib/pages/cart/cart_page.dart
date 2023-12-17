@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:highlandcoffeeapp/components/button/button_authentication.dart';
 import 'package:highlandcoffeeapp/pages/detail/product_detail_page.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 import 'package:highlandcoffeeapp/util/cart/order_form.dart';
@@ -28,11 +29,13 @@ class _CartPageState extends State<CartPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text('Giỏ hàng',
-            style: GoogleFonts.arsenal(
-                color: primaryColors,
-                fontSize: 20,
-                fontWeight: FontWeight.bold)),
+        title: Center(
+          child: Text('Giỏ hàng',
+              style: GoogleFonts.arsenal(
+                  color: primaryColors,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold)),
+        ),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
@@ -42,6 +45,9 @@ class _CartPageState extends State<CartPage> {
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_checkout, color: primaryColors,))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(18.0),
@@ -54,10 +60,14 @@ class _CartPageState extends State<CartPage> {
               style: TextStyle(color: black),
             )),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
-           OrderForm(cartItems: cartItems),
+            OrderForm(cartItems: cartItems),
             //button order now
+            SizedBox(
+              height: 10,
+            ),
+            ButtonAuthentication(text: 'Xác nhận', onTap: () {  },)
           ],
         ),
       ),
@@ -73,6 +83,6 @@ class CartItem {
   final int quantity;
   final String selectedSize;
 
-  CartItem(
-      this.productImage, this.productName, this.newPrice, this.totalPrice, this.quantity, this.selectedSize);
+  CartItem(this.productImage, this.productName, this.newPrice, this.totalPrice,
+      this.quantity, this.selectedSize);
 }

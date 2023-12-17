@@ -17,7 +17,13 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text('Tài khoản', style: GoogleFonts.arsenal(color: primaryColors, fontSize: 20.0, fontWeight: FontWeight.bold),),
+        title: Text(
+          'Tài khoản',
+          style: GoogleFonts.arsenal(
+              color: primaryColors,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold),
+        ),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

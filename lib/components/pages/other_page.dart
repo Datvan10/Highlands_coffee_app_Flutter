@@ -57,12 +57,15 @@ class _OtherPageState extends State<OtherPage> {
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.shopping_cart,
-                color: primaryColors,
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: primaryColors,
+                )),
+          )
         ],
       ),
       body: Column(

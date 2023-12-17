@@ -21,7 +21,7 @@ class _CoffeePageState extends State<CoffeePage> {
         description:
             'Kết hợp từ cà phê truyền thống cùng với caramel, thạch cà phê và đá xay mát lạnh. Trên cùng là lớp kem tươi thơm béo và caramel ngọt ngào.',
         imagePath: 'assets/images/coffee/americano.jpg',
-        imageDetailPath: '',
+        imageDetailPath: 'assets/images/detail/americano-deatil.jpg',
         oldPrice: 59.000,
         newPrice: 55.000,
         rating: '4.2'),
@@ -38,7 +38,7 @@ class _CoffeePageState extends State<CoffeePage> {
         description:
             'Trà xanh thượng hạng từ cao nguyên Việt Nam, kết hợp cùng đá xay, thạch trà dai dai, thơm ngon và một lớp kem dày phủ lên trên vô cùng hấp dẫn.',
         imagePath: 'assets/images/coffee/cappuccino.jpg',
-        imageDetailPath: '',
+        imageDetailPath: 'assets/images/detail/cappuccino-detail.jpg',
         oldPrice: 65.000,
         newPrice: 55.000,
         rating: '4.9'),
@@ -52,11 +52,11 @@ class _CoffeePageState extends State<CoffeePage> {
         newPrice: 55.000,
         rating: '4.8'),
     Products(
-        name: 'CARAMEL CAPPUCCINO',
+        name: 'CARAMEL MACCHIATO',
         description:
             'Vị trà đậm đà kết hợp cùng những miếng đào thơm ngon mọng nước cùng thạch đào giòn dai. Thêm vào ít sữa để gia tăng vị béo.',
-        imagePath: 'assets/images/coffee/caramel-cappucino.jpg',
-        imageDetailPath: '',
+        imagePath: 'assets/images/coffee/caramel-macchiato.jpg',
+        imageDetailPath: 'assets/images/detail/caramel-macchiato-detail.jpg',
         oldPrice: 49.000,
         newPrice: 45.000,
         rating: '4.4'),
@@ -146,12 +146,15 @@ class _CoffeePageState extends State<CoffeePage> {
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.shopping_cart,
-                color: primaryColors,
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: primaryColors,
+                )),
+          )
         ],
       ),
       body: Column(

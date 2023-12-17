@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:highlandcoffeeapp/pages/login/login_page.dart';
+import 'package:highlandcoffeeapp/pages/login/user/login_page.dart';
 import 'package:highlandcoffeeapp/pages/signinup/singinup_page.dart';
 
 class LoginToggleSigninupPage extends StatefulWidget {

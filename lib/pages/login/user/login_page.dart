@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,41 +20,94 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool isObsecure = false;
 
-  //function when user login with email
-  void loginUserEmail() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      showErrorMessage(e.code);
+  //
+  Future loginUserEmail() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      // Show an alert if either email or password is empty
+      showEmptyFieldsAlert();
+    } else {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } on FirebaseAuthException catch (e) {
+        // Handle authentication errors here
+        print("Authentication Error: ${e.message}");
+      }
     }
   }
 
-  // function wrongEmailMessage()
-  void showErrorMessage(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: primaryColors,
-            title: Center(
-              child: Text(
-                message,
-                style: TextStyle(color: white),
-              ),
-            ),
-          );
-        });
+  void dispose() {
+    _emailController.text.trim();
+    _passwordController.text.trim();
+
+    super.dispose();
   }
+
+  //
+  void showEmptyFieldsAlert() {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text("Thông báo",
+              style: GoogleFonts.arsenal(
+                  color: primaryColors,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)),
+          content: Text("Đăng nhập không hợp lệ, vui lòng thử lại"),
+          actions: [
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // //function when user login with email
+  // void loginUserEmail() async {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return Center(
+  //           child: CircularProgressIndicator(),
+  //         );
+  //       });
+  //   try {
+  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //         email: _emailController.text, password: _passwordController.text);
+  //     Navigator.pop(context);
+  //   } on FirebaseAuthException catch (e) {
+  //     Navigator.pop(context);
+  //     showErrorMessage(e.code);
+  //   }
+  // }
+
+  // // function wrongEmailMessage()
+  // void showErrorMessage(String message) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           backgroundColor: primaryColors,
+  //           title: Center(
+  //             child: Text(
+  //               message,
+  //               style: TextStyle(color: white),
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: background,
       body: Padding(
         padding: const EdgeInsets.only(
-            left: 20.0, top: 150.0, right: 20.0, bottom: 60),
+            left: 20.0, top: 110.0, right: 20.0, bottom: 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -72,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 30.0, fontWeight: FontWeight.bold, color: brown),
             ),
             SizedBox(
-              height: 150.0,
+              height: 190.0,
             ),
             //form email
             TextFormField(
@@ -88,14 +142,20 @@ class _LoginPageState extends State<LoginPage> {
                   contentPadding: EdgeInsets.all(15),
                   filled: true,
                   fillColor: white,
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: Icon(
+                    Icons.email,
+                    color: primaryColors,
+                  ),
                   suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
                           _emailController.clear();
                         });
                       },
-                      icon: Icon(Icons.clear)),
+                      icon: Icon(
+                        Icons.clear,
+                        color: primaryColors,
+                      )),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(40),
                       borderSide: BorderSide(color: white)),
@@ -121,10 +181,15 @@ class _LoginPageState extends State<LoginPage> {
                   fillColor: white,
                   hintText: 'Nhập mật khẩu...',
                   contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(Icons.vpn_key_sharp),
+                  prefixIcon: Icon(
+                    Icons.vpn_key_sharp,
+                    color: primaryColors,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                        isObsecure ? Icons.visibility : Icons.visibility_off),
+                      isObsecure ? Icons.visibility : Icons.visibility_off,
+                      color: primaryColors,
+                    ),
                     onPressed: () {
                       setState(() {
                         isObsecure = !isObsecure;
@@ -186,7 +251,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             //or login with facebook, email, google,...
             Center(
-                child: Text('ĐĂNG NHẬP BẰNG', style: GoogleFonts.roboto(color: grey))),
+                child: Text('ĐĂNG NHẬP BẰNG',
+                    style: GoogleFonts.roboto(color: grey))),
             SizedBox(
               height: 20.0,
             ),
@@ -205,7 +271,8 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Chưa có tài khoản? ', style: GoogleFonts.roboto(color: grey)),
+                Text('Chưa có tài khoản? ',
+                    style: GoogleFonts.roboto(color: grey)),
                 GestureDetector(
                   onTap: widget.onTap,
                   child: Text(

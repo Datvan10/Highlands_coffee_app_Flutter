@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:highlandcoffeeapp/themes/theme.dart';
 
 class FavoriteProductPage extends StatefulWidget {
   const FavoriteProductPage({super.key});
@@ -10,8 +11,8 @@ class FavoriteProductPage extends StatefulWidget {
 class _FavoriteProductPageState extends State<FavoriteProductPage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      
+    return Scaffold(
+      backgroundColor: background,
     );
   }
 }

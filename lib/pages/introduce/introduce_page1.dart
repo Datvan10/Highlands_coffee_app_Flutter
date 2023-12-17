@@ -39,6 +39,7 @@ class IntroducePage1 extends StatelessWidget {
               description,
               style: GoogleFonts.arsenal(fontSize: 18, color: Colors.grey),
             ),
+            SizedBox(height: 50,),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

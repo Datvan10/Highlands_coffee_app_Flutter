@@ -1,19 +1,27 @@
 class Users {
-  String firstName;
-  String lastName;
-  int age;
-  String sex;
-  String adress;
-  int phoneNumber;
-  String imagePath;
+  final String? id;
+  final String? email;
+  final int? phoneNumber;
+  final String? address;
+  final String? userName;
+  final String? passWord;
 
-  Users({required this.firstName, required this.lastName, required this.age, required this.sex, required this.adress, required this.phoneNumber, required this.imagePath});
+  Users({
+    this.id,
+    required this.email,
+    required this.phoneNumber,
+    required this.address,
+    required this.userName,
+    required this.passWord,
+  });
 
-  String get _firstName => firstName;
-  String get _lastName => lastName;
-  int get _age => age;
-  String get _sex => sex;
-  String get _adress => adress;
-  int get _phoneNumber => phoneNumber;
-  String get _imagePath => imagePath;
+  toJson(){
+    return{
+      "Email" : email,
+      "Phonenumber" : phoneNumber,
+      "Address" : address,
+      "Username" : userName,
+      "Password" : passWord
+    };
+  }
 }

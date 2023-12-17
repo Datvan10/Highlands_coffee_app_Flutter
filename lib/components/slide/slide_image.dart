@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class SlideImageHomePage extends StatefulWidget {
+class SlideImage extends StatefulWidget {
   final double? height;
 
-  SlideImageHomePage({Key? key, required this.height}) : super(key: key);
+  SlideImage({Key? key, required this.height}) : super(key: key);
 
   @override
-  State<SlideImageHomePage> createState() => _SlideImageHomePage();
+  State<SlideImage> createState() => _SlideImageState();
 }
 
-class _SlideImageHomePage extends State<SlideImageHomePage> {
+class _SlideImageState extends State<SlideImage> {
   int activeIndex = 0;
   final controller = CarouselController();
   final imagePaths = [

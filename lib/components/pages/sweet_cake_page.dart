@@ -38,7 +38,7 @@ class _SweetCakePageState extends State<SweetCakePage> {
         description:
             'Trà xanh thượng hạng từ cao nguyên Việt Nam, kết hợp cùng đá xay, thạch trà dai dai, thơm ngon và một lớp kem dày phủ lên trên vô cùng hấp dẫn.',
         imagePath: 'assets/images/cake/caramel-pho-mai.jpg',
-        imageDetailPath: '',
+        imageDetailPath: 'assets/images/detail/caramel-pho-mai-detail.jpg',
         oldPrice: 65.000,
         newPrice: 35.000,
         rating: '4.9'),
@@ -110,12 +110,15 @@ class _SweetCakePageState extends State<SweetCakePage> {
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.shopping_cart,
-                color: primaryColors,
-              ))
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: primaryColors,
+                )),
+          )
         ],
       ),
       body: Column(

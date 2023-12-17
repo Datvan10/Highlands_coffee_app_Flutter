@@ -68,18 +68,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   //
 // Trong _ProductDetailPageState
-void addToCart(String productImage, String productName, double newPrice, double totalPrice, int quantity, String selectedSize) {
+  void addToCart(String productImage, String productName, double newPrice,
+      double totalPrice, int quantity, String selectedSize) {
     // print('Adding to Cart: $productImage, $productName, $totalPrice, $quantity, $selectedSize');
 
     // Tạo một đối tượng CartItem
-    CartItem item = CartItem(
-      productImage,
-      productName,
-      newPrice,
-      totalPrice,
-      quantity,
-      selectedSize
-    );
+    CartItem item = CartItem(productImage, productName, newPrice, totalPrice,
+        quantity, selectedSize);
 
     // Thêm mục vào giỏ hàng
     setState(() {
@@ -95,21 +90,49 @@ void addToCart(String productImage, String productName, double newPrice, double 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: primaryColors,
-      //   // automaticallyImplyLeading: false,
-      //   elevation: 0,
-      //   actions: [
-      //     IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart))
-      //   ],
-      //   ),
       body: Column(
         children: [
-          Expanded(
-              child: Image.asset(
-            widget.product.imageDetailPath,
-            fit: BoxFit.fill,
-          )),
+          Stack(
+            children: [
+              Image.asset(
+                widget.product.imageDetailPath,
+                fit: BoxFit.cover,
+              ),
+              //
+              Positioned(
+                top: 54,
+                left: 8,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: white,
+                  ),
+                  onPressed: () {
+                    // Xử lý khi nhấn nút quay lại
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              //
+              Positioned(
+                top: 54,
+                right: 8,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: white,
+                  ),
+                  onPressed: () {
+                    // // Xử lý khi nhấn nút giỏ hàng
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //   builder: (context) => CartPage(),
+                    // ));
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10,),
           Expanded(
               child: Container(
             padding: const EdgeInsets.only(top: 10.0),
@@ -140,9 +163,10 @@ void addToCart(String productImage, String productName, double newPrice, double 
                         size: 30,
                       ))
                 ]),
+                SizedBox(height: 10,),
                 //product image and description
                 Padding(
-                  padding: const EdgeInsets.only(right: 20),
+                  padding: const EdgeInsets.only(right: 18),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -165,7 +189,7 @@ void addToCart(String productImage, String productName, double newPrice, double 
                 ),
                 //product size
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 18, right: 18),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -208,7 +232,7 @@ void addToCart(String productImage, String productName, double newPrice, double 
                 ),
                 //product quantity
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 18, right: 18),
                   child: Row(
                     children: [
                       Text(
@@ -225,7 +249,7 @@ void addToCart(String productImage, String productName, double newPrice, double 
                               width: 30,
                               height: 30,
                               decoration: BoxDecoration(
-                                  color: primaryColors, shape: BoxShape.circle),
+                                  color: light_grey, shape: BoxShape.circle),
                               child: GestureDetector(
                                 onTap: decrementQuantity,
                                 child: Icon(
@@ -268,7 +292,7 @@ void addToCart(String productImage, String productName, double newPrice, double 
                 ),
                 //product price
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 18, right: 18),
                   child: Row(
                     children: [
                       Text(
@@ -292,11 +316,11 @@ void addToCart(String productImage, String productName, double newPrice, double 
                   ),
                 ),
                 SizedBox(
-                  height: 50,
+                  height: 60,
                 ),
                 //button add to cart and buy now
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 18, right: 18),
                   child: IntrinsicHeight(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
