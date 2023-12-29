@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:highlandcoffeeapp/components/button/button_add_to_cart.dart';
-import 'package:highlandcoffeeapp/components/button/button_buy_now.dart';
+import 'package:highlandcoffeeapp/components/widget/button_add_to_cart.dart';
+import 'package:highlandcoffeeapp/components/widget/button_buy_now.dart';
 import 'package:highlandcoffeeapp/models/products.dart';
 import 'package:highlandcoffeeapp/pages/cart/cart_page.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
@@ -31,6 +35,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   bool isFavorite = false;
   String selectedSize = 'S';
   List<CartItem> cartItems = [];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -67,25 +72,139 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   //
+  void _showConfirmationDialog() {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text("Thêm vào danh sách sản phẩm yêu thích?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Hủy", style: TextStyle(color: red),),
+            ),
+            TextButton(
+              onPressed: () {
+                _addToFavorites();
+                setState(() {
+                  isFavorite = !isFavorite;
+                });
+                Navigator.pop(context);
+              },
+              child: Text("Đồng ý", style: TextStyle(color: blue),),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //
+  void _addToFavorites() async {
+    // Lấy thông tin từ đối tượng product
+    String id = widget.product.id;
+    String category = widget.product.category;
+    String imagePath = widget.product.imagePath;
+    String imageDetailPath = widget.product.imageDetailPath;
+    String name = widget.product.name;
+    String description = widget.product.description;
+    double oldPrice = widget.product.oldPrice;
+    double newPrice = widget.product.newPrice;
+    String rating = widget.product.rating;
+
+    // Thêm sản phẩm vào collection "Sản phẩm yêu thích" trên Firestore
+    await FirebaseFirestore.instance.collection('Sản phẩm yêu thích').add({
+      'id': id,
+      'category': category,
+      'imagePath': imagePath,
+      'imageDetailPath': imageDetailPath,
+      'name': name,
+      'description': description,
+      'oldPrice': oldPrice,
+      'newPrice': newPrice,
+      'rating': rating
+      // Thêm các trường khác cần thiết
+    });
+
+    // Hiển thị thông báo hoặc cập nhật UI theo yêu cầu
+  }
+
+  // Function to add item to the cart collection
+  // Trong _ProductDetailPageState
+  Future<void> addToCartFirestore(CartItem item) async {
+    try {
+      DocumentReference docRef = await _firestore.collection('Giỏ hàng').add({
+        'orderId': item.productId,
+        'productImage': item.productImage,
+        'productName': item.productName,
+        'newPrice': item.newPrice,
+        'totalPrice': item.totalPrice,
+        'quantity': item.quantity,
+        'selectedSize': item.selectedSize,
+      });
+
+      // Lấy ID của sản phẩm vừa được thêm vào Firestore và cập nhật lại cho item
+      item.productId = docRef.id;
+
+      print('Item added to cart collection successfully with ID: ${docRef.id}');
+      _showAlert('Thông báo', 'Thêm sản phẩm vào giỏ hàng thành công.');
+    } catch (e) {
+      print('Error adding item to cart collection: $e');
+    }
+  }
+
 // Trong _ProductDetailPageState
-  void addToCart(String productImage, String productName, double newPrice,
-      double totalPrice, int quantity, String selectedSize) {
-    // print('Adding to Cart: $productImage, $productName, $totalPrice, $quantity, $selectedSize');
+  void addToCart(String productId, String productImage, String productName,
+      double newPrice, double totalPrice, int quantity, String selectedSize) {
+    CartItem item = CartItem(
+      productId,
+      productImage,
+      productName,
+      newPrice,
+      totalPrice,
+      quantity,
+      selectedSize,
+    );
 
-    // Tạo một đối tượng CartItem
-    CartItem item = CartItem(productImage, productName, newPrice, totalPrice,
-        quantity, selectedSize);
-
-    // Thêm mục vào giỏ hàng
     setState(() {
       cartItems.add(item);
     });
 
-    // Gửi thông tin đến trang CartPage với danh sách cartItems đã cập nhật
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => CartPage(arguments: CartPageArguments(cartItems)),
-    ));
+    // Add item to the 'Giỏ hàng' collection
+    addToCartFirestore(item);
+
+    // Show a snackbar or some other UI feedback to indicate success
   }
+
+  //
+  void _showAlert(String title, String content) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: GoogleFonts.arsenal(color: primaryColors),
+          ),
+          content: Text(content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'OK',
+                style: TextStyle(color: blue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  //
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +213,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         children: [
           Stack(
             children: [
-              Image.asset(
-                widget.product.imageDetailPath,
-                fit: BoxFit.cover,
+              Image.network(
+                widget.product.imageDetailPath != null
+                    ? widget.product.imageDetailPath
+                    : '',
               ),
+
               //
               Positioned(
                 top: 54,
@@ -123,16 +244,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     color: white,
                   ),
                   onPressed: () {
-                    // // Xử lý khi nhấn nút giỏ hàng
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //   builder: (context) => CartPage(),
-                    // ));
+                    // Xử lý khi nhấn nút giỏ hàng
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CartPage(),
+                    ));
                   },
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10,),
           Expanded(
               child: Container(
             padding: const EdgeInsets.only(top: 10.0),
@@ -153,9 +273,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   IconButton(
                       onPressed: () {
-                        setState(() {
-                          isFavorite = !isFavorite;
-                        });
+                        _showConfirmationDialog();
                       },
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -163,17 +281,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         size: 30,
                       ))
                 ]),
-                SizedBox(height: 10,),
                 //product image and description
                 Padding(
                   padding: const EdgeInsets.only(right: 18),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(
+                      Image.network(
                         widget.product.imagePath,
-                        width: 90,
-                        height: 90,
+                        width: 85,
+                        height: 85,
+                        fit: BoxFit.cover,
                       ),
                       Expanded(
                         child: Text(
@@ -236,13 +354,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   child: Row(
                     children: [
                       Text(
-                        'Số lượng',
+                        'Số lượng ',
                         style: GoogleFonts.arsenal(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
                             color: black),
                       ),
-                      SizedBox(width: 52),
+                      SizedBox(width: 50),
                       Row(
                         children: [
                           Container(
@@ -316,6 +434,58 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                 ),
                 SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, right: 18),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Đánh giá ',
+                        style: GoogleFonts.arsenal(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: black),
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        widget.product.rating,
+                        style: GoogleFonts.roboto(fontSize: 19, color: black),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      //
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 19,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 19,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 19,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 19,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
                   height: 60,
                 ),
                 //button add to cart and buy now
@@ -329,7 +499,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           text: 'Thêm vào giỏ',
                           onTap: () {
                             addToCart(
-                              widget.product.imagePath,
+                              widget.product.id as String,
+                              widget.product.imagePath as String,
                               widget.product.name,
                               widget.product.newPrice,
                               totalPrice,

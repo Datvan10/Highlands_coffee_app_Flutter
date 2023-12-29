@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:highlandcoffeeapp/components/pages/list_product_page.dart';
 import 'package:highlandcoffeeapp/pages/admin/page/add_product_page.dart';
 import 'package:highlandcoffeeapp/pages/admin/page/dashboard_page.dart';
 import 'package:highlandcoffeeapp/pages/admin/page/delete_product_page.dart';
@@ -79,8 +78,6 @@ class _AdminPageState extends State<AdminPage> {
         });
 
         break;
-
-        break;
     }
   }
 
@@ -94,12 +91,12 @@ class _AdminPageState extends State<AdminPage> {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child:
-                  IconButton(onPressed: () {}, icon: Icon(Icons.no_accounts)),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.account_circle)),
             )
           ],
           backgroundColor: Colors.transparent,
           title: Text(
-            'ADMIN PAGE',
+            'TRANG QUẢN TRỊ',
             style: GoogleFonts.arsenal(
                 color: primaryColors,
                 fontWeight: FontWeight.bold,
@@ -181,27 +178,27 @@ class _AdminPageState extends State<AdminPage> {
                 ]),
             //
             AdminMenuItem(
-              title: 'Thoát',
-              icon: Icons.exit_to_app,
+              title: 'Đăng xuất',
+              icon: Icons.logout,
             ),
           ],
           selectedRoute: '', // Thêm selectedRoute vào đây
           onSelected: (item) {
             screenSlector(item);
           },
-          // header: Container(
-          //   height: 50,
-          //   width: double.infinity,
-          //   color: const Color(0xff444444),
-          //   child: const Center(
-          //     child: Text(
-          //       'header',
-          //       style: TextStyle(
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          header: Container(
+            height: 50,
+            width: double.infinity,
+            color: brown,
+            child: const Center(
+              child: Text(
+                'Highlands Coffee Admin',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
           // footer: Container(
           //   height: 50,
           //   width: double.infinity,

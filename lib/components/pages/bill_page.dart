@@ -1,7 +1,12 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:highlandcoffeeapp/components/button/button_authentication.dart';
-import 'package:highlandcoffeeapp/components/button/button_payment.dart';
+import 'package:highlandcoffeeapp/components/widget/my_button.dart';
 import 'package:highlandcoffeeapp/models/tickets.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 import 'package:highlandcoffeeapp/util/bill/discount_code_form.dart';
@@ -16,8 +21,134 @@ class BillPage extends StatefulWidget {
 }
 
 class _BillPageState extends State<BillPage> {
+  late Map<String, dynamic> userData = {};
+  int totalQuantity = 0;
+  late double totalPrice = 0.0;
+  String selectedPaymentMethod = '';
   //
   final _textDiscountCodeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getTotalQuantity();
+    fetchTotalPrice();
+  }
+
+  //
+  Future<void> getTotalQuantity() async {
+    QuerySnapshot<Map<String, dynamic>> cartSnapshot =
+        await FirebaseFirestore.instance.collection('Giỏ hàng').get();
+
+    int total = cartSnapshot.docs.fold(0, (total, doc) {
+      return total + (doc.data()['quantity'] as int);
+    });
+
+    setState(() {
+      totalQuantity = total;
+    });
+  }
+
+  //
+  Future<void> fetchTotalPrice() async {
+    // Fetch the cart items from the Firestore collection
+    QuerySnapshot<Map<String, dynamic>> cartSnapshot =
+        await FirebaseFirestore.instance
+            .collection('Giỏ hàng') // Change to your collection name
+            .get();
+
+    // Calculate the total price from the cart items
+    double total = cartSnapshot.docs.fold(0.0, (total, doc) {
+      return total + (doc.data()['totalPrice'] as double);
+    });
+
+    setState(() {
+      totalPrice = total;
+    });
+  }
+
+  // Hàm để tạo mã đơn hàng
+  String generateOrderId() {
+    // Bạn có thể tùy chỉnh mã đơn hàng theo nhu cầu của mình, ví dụ như kết hợp thời gian và một số ngẫu nhiên
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    String randomPart = Random().nextInt(1000).toString().padLeft(3, '0');
+    return 'ORDER_$timestamp$randomPart';
+  }
+
+  // Hàm để lưu thông tin đơn hàng vào cơ sở dữ liệu
+  Future<void> _placeOrder() async {
+  // Lấy thông tin người dùng từ InformationForm
+  Map<String, dynamic> userInfo = await getUserData('2vPCzLR6LNVRi8uHXPV0');
+  // Lấy chỉ các trường cần thiết từ userInfo
+  String userName = userInfo?['userName'] ?? '';
+  int phoneNumber = userInfo?['phoneNumber'] ?? 0;
+  String address = userInfo?['address'] ?? '';
+
+  // Lấy thông tin từ giỏ hàng
+  QuerySnapshot<Map<String, dynamic>> cartSnapshot =
+      await FirebaseFirestore.instance.collection('Giỏ hàng').get();
+
+  List<Map<String, dynamic>> products = cartSnapshot.docs
+      .map((DocumentSnapshot<Map<String, dynamic>> doc) => doc.data() ?? {})
+      .toList();
+
+  // Kiểm tra nếu giỏ hàng không có sản phẩm
+  if (products.isEmpty) {
+    _showAlert('Lỗi', 'Đơn hàng không có sản phẩm để đặt hàng.');
+    return;
+  }
+
+  // Tạo một đơn hàng mới với mã đơn hàng
+  String orderId = generateOrderId();
+  // Tạo một đơn hàng mới
+  await FirebaseFirestore.instance.collection('Đơn hàng').add({
+    'Mã đơn hàng': orderId,
+    'Thông tin khách hàng': {
+      'userName': userName,
+      'phoneNumber': phoneNumber,
+      'address': address,
+    },
+    'Sản phẩm': products,
+    'Số lượng sản phẩm': totalQuantity,
+    'Tổng tiền': totalPrice,
+    'Phương thức thanh toán': selectedPaymentMethod,
+    'Trạng thái': 'Đang chờ duyệt', // Thêm trường trạng thái ở đây
+    'Thời gian đặt hàng': FieldValue.serverTimestamp(),
+    // Thêm các trường khác cần thiết
+  });
+  _showAlert('Thông báo', 'Đơn hàng được đặt thành công.');
+
+  // Xóa giỏ hàng sau khi đặt hàng thành công
+  await FirebaseFirestore.instance.collection('Giỏ hàng').get().then(
+    (snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.delete();
+      }
+    },
+  );
+}
+
+
+
+  //
+  Future<Map<String, dynamic>> getUserData(String userId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(userId)
+              .get();
+
+      if (userSnapshot.exists) {
+        return userSnapshot.data() ?? {};
+      } else {
+        return {};
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+      return {};
+    }
+  }
 
   List discountTickets = [
     Tickets(
@@ -47,7 +178,7 @@ class _BillPageState extends State<BillPage> {
   ];
 
   //
-  void _showPayFormForm(BuildContext context) {
+  void _showPayForm(BuildContext context) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true, // Chiều dài có thể được cuộn
@@ -80,26 +211,54 @@ class _BillPageState extends State<BillPage> {
                     children: [
                       //
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Số lượng', style: GoogleFonts.arsenal(fontSize: 18.0, color: primaryColors, fontWeight: FontWeight.bold),),
+                          Text(
+                            'Số lượng',
+                            style: GoogleFonts.arsenal(
+                                fontSize: 18.0,
+                                color: primaryColors,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text('$totalQuantity',
+                              style: GoogleFonts.arsenal(
+                                  color: primaryColors, fontSize: 16))
                         ],
                       ),
                       SizedBox(
-                    height: 15,
-                  ),
+                        height: 15,
+                      ),
                       //
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Phương thức', style: GoogleFonts.arsenal(fontSize: 18.0, color: primaryColors, fontWeight: FontWeight.bold)),
+                          Text('Phương thức',
+                              style: GoogleFonts.arsenal(
+                                  fontSize: 18.0,
+                                  color: primaryColors,
+                                  fontWeight: FontWeight.bold)),
+                          Text(
+                            '$selectedPaymentMethod',
+                            style: GoogleFonts.arsenal(
+                                color: primaryColors, fontSize: 16),
+                          )
                         ],
                       ),
                       SizedBox(
-                    height: 15,
-                  ),
+                        height: 15,
+                      ),
                       //
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Khuyến mãi', style: GoogleFonts.arsenal(fontSize: 18.0, color: primaryColors, fontWeight: FontWeight.bold)),
+                          Text('Khuyến mãi',
+                              style: GoogleFonts.arsenal(
+                                  fontSize: 18.0,
+                                  color: primaryColors,
+                                  fontWeight: FontWeight.bold)),
+                          Text('0đ',
+                              style: GoogleFonts.arsenal(
+                                  color: primaryColors, fontSize: 16))
                         ],
                       )
                     ],
@@ -109,13 +268,31 @@ class _BillPageState extends State<BillPage> {
                   ),
                   //
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Tổng', style: GoogleFonts.arsenal(fontSize: 21.0, color: primaryColors, fontWeight: FontWeight.bold))
+                      Text('Tổng',
+                          style: GoogleFonts.arsenal(
+                              fontSize: 18.0,
+                              color: primaryColors,
+                              fontWeight: FontWeight.bold)),
+                      Text('${totalPrice.toStringAsFixed(3)}đ',
+                          style: GoogleFonts.arsenal(
+                              fontSize: 21.0,
+                              color: primaryColors,
+                              fontWeight: FontWeight.bold))
                     ],
                   ),
-                  SizedBox(height: 100,),
+                  SizedBox(
+                    height: 100,
+                  ),
                   //
-                  ButtonPayment(text: 'Thanh toán', onTap: (){})
+                  MyButton(
+                    text: 'Đặt hàng',
+                    onTap: () {
+                      _placeOrder();
+                    },
+                    buttonColor: primaryColors,
+                  )
                 ],
               ),
             ),
@@ -202,17 +379,48 @@ class _BillPageState extends State<BillPage> {
               SizedBox(
                 height: 35,
               ),
-              ButtonAuthentication(
-                  text: 'Xác nhận',
-                  onTap: () {
-                    // setState(() {
-                    //   _showPayFormForm(context);
-                    // });
-                    Navigator.pop(context);
-                    _showPayFormForm(context);
-                  })
+              MyButton(
+                text: 'Xác nhận',
+                onTap: () {
+                  // setState(() {
+                  //   _showPayFormForm(context);
+                  // });
+                  Navigator.pop(context);
+                  _showPayForm(context);
+                },
+                buttonColor: primaryColors,
+              )
             ],
           ),
+        );
+      },
+    );
+  }
+
+  //
+  //
+  void _showAlert(String title, String content) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: GoogleFonts.arsenal(color: primaryColors),
+          ),
+          content: Text(content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+                Get.toNamed('/home_page');
+              },
+              child: Text(
+                'OK',
+                style: TextStyle(color: blue),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -265,7 +473,9 @@ class _BillPageState extends State<BillPage> {
             height: 15,
           ),
           //
-          InformationForm(),
+          // Trong BillPage, tại nơi sử dụng InformationForm
+          InformationForm(userId: '2vPCzLR6LNVRi8uHXPV0'),
+
           SizedBox(
             height: 15,
           ),
@@ -281,7 +491,14 @@ class _BillPageState extends State<BillPage> {
             height: 15,
           ),
           //
-          PaymentMethodForm(),
+          PaymentMethodForm(
+            onPaymentMethodSelected: (method) {
+              // Update the selected payment method
+              setState(() {
+                selectedPaymentMethod = method;
+              });
+            },
+          ),
           SizedBox(
             height: 15,
           ),
@@ -296,9 +513,14 @@ class _BillPageState extends State<BillPage> {
                     color: primaryColors,
                     fontWeight: FontWeight.bold),
               ),
-              Text(
-                'Chọn khuyến mãi',
-                style: GoogleFonts.arsenal(color: blue, fontSize: 15),
+              GestureDetector(
+                onTap: () {
+                  _showConfirmForm(context);
+                },
+                child: Text(
+                  'Chọn khuyến mãi',
+                  style: GoogleFonts.arsenal(color: blue, fontSize: 15),
+                ),
               )
             ],
           ),
@@ -309,7 +531,7 @@ class _BillPageState extends State<BillPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'Thành tiền : ',
+                'Thành tiền : ${totalPrice.toStringAsFixed(3)}đ',
                 style: GoogleFonts.arsenal(
                     fontSize: 18,
                     color: primaryColors,
@@ -321,11 +543,13 @@ class _BillPageState extends State<BillPage> {
             height: 150,
           ),
           //
-          ButtonPayment(
-              text: 'Thanh toán',
-              onTap: () {
-                _showConfirmForm(context);
-              })
+          MyButton(
+            text: 'Xác nhận',
+            onTap: () {
+              _showPayForm(context);
+            },
+            buttonColor: primaryColors,
+          )
         ]),
       ),
     );

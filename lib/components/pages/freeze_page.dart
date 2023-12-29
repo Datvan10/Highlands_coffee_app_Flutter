@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:highlandcoffeeapp/components/pages/favorite_product_page.dart';
+import 'package:highlandcoffeeapp/components/pages/list_product_page.dart';
 import 'package:highlandcoffeeapp/models/products.dart';
+import 'package:highlandcoffeeapp/pages/cart/cart_page.dart';
 import 'package:highlandcoffeeapp/pages/detail/product_detail_page.dart';
+import 'package:highlandcoffeeapp/pages/home/home_page.dart';
+import 'package:highlandcoffeeapp/pages/user/profile/profile_user_page.dart';
 import 'package:highlandcoffeeapp/themes/theme.dart';
 import 'package:highlandcoffeeapp/util/product/product_form.dart';
 
@@ -15,67 +21,34 @@ class FreezePage extends StatefulWidget {
 }
 
 class _FreezePageState extends State<FreezePage> {
-  List productsFreeze = [
-    Products(
-        name: 'CARAMEL PHIN FREEZE',
-        description:
-            'Kết hợp từ cà phê truyền thống cùng với caramel, thạch cà phê và đá xay mát lạnh. Trên cùng là lớp kem tươi thơm béo và caramel ngọt ngào.',
-        imagePath: 'assets/images/freeze/caramel-phin-freeze.jpg',
-        imageDetailPath: 'assets/images/detail/caramel-phin-freeze-detail.jpg',
-        oldPrice: 59.000,
-        newPrice: 55.000,
-        rating: '4.2'),
-    Products(
-        name: 'CLASSIC PHIN FREEZE',
-        description: 'description',
-        imagePath: 'assets/images/freeze/classic-phin-freeze.jpg',
-        imageDetailPath: 'assets/images/detail/classic-phin-freeze-detail.jpg',
-        oldPrice: 35.000,
-        newPrice: 28.000,
-        rating: '4.3'),
-    Products(
-        name: 'COOKIES CREAM',
-        description:
-            'Trà xanh thượng hạng từ cao nguyên Việt Nam, kết hợp cùng đá xay, thạch trà dai dai, thơm ngon và một lớp kem dày phủ lên trên vô cùng hấp dẫn.',
-        imagePath: 'assets/images/freeze/cookies-cream.jpg',
-        imageDetailPath: 'assets/images/detail/cookies-cream-detail.jpg',
-        oldPrice: 65.000,
-        newPrice: 55.000,
-        rating: '4.9'),
-    Products(
-        name: 'FREEZE SOCOLA',
-        description:
-            'Sự kết hợp hoàn hảo giữa cookies sô cô la giòn xốp cùng hỗn hợp sữa tươi cùng sữa đặc đem say với đá viên, và lớp kem whip mềm mịn cùng cookies sô cô la say nhuyễn.',
-        imagePath: 'assets/images/freeze/freeze-so-co-la.jpg',
-        imageDetailPath: 'assets/images/detail/freeze-so-co-la-detail.jpg',
-        oldPrice: 59.000,
-        newPrice: 55.000,
-        rating: '4.8'),
-    Products(
-        name: 'FREEZE TRÀ XANH',
-        description:
-            'Vị trà đậm đà kết hợp cùng những miếng đào thơm ngon mọng nước cùng thạch đào giòn dai. Thêm vào ít sữa để gia tăng vị béo.',
-        imagePath: 'assets/images/freeze/freeze-tra-xanh.jpg',
-        imageDetailPath: 'assets/images/detail/freeze-tra-xanh-detail.jpg',
-        oldPrice: 49.000,
-        newPrice: 45.000,
-        rating: '4.4'),
-    Products(
-        name: 'FREEZE QUẢ MỌNG ANH ĐÀO',
-        description:
-            'Vị trà đậm đà kết hợp cùng những miếng đào thơm ngon mọng nước cùng thạch đào giòn dai. Thêm vào ít sữa để gia tăng vị béo.',
-        imagePath: 'assets/images/freeze/freeze-qua-mong-anh-dao.jpg',
-        imageDetailPath: 'assets/images/detail/freeze-qua-mong-anh-dao-detail.jpg',
-        oldPrice: 49.000,
-        newPrice: 45.000,
-        rating: '4.4'),
-  ];
+  int _selectedIndexBottomBar = 1;
+  late Stream<List<Products>> productsStream;
 
-//naviagte to product details page
-  void _naviagteToProductsDetails(int index) {
-    Get.to(ProductDetailPage(
-      product: productsFreeze[index],
-    ));
+  //SelectedBottomBar
+  void _selectedBottomBar(int index) {
+    setState(() {
+        _selectedIndexBottomBar = index;
+      });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Set up the stream to listen for changes in the "Freeze" collection
+    productsStream = FirebaseFirestore.instance
+        .collection('Freeze')
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Products.fromDocument(doc)).toList());
+  }
+
+  void _navigateToProductDetails(int index, List<Products> products) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailPage(product: products[index]),
+      ),
+    );
   }
 
   @override
@@ -102,40 +75,132 @@ class _FreezePageState extends State<FreezePage> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right : 8.0),
+            padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: primaryColors,
-                )),
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          // Các widgets trong body ở đây
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Số cột
-                  crossAxisSpacing: 18.0, // Khoảng cách giữa các cột
-                  mainAxisSpacing: 18.0, // Khoảng cách giữa các hàng
-                  childAspectRatio:
-                      0.64, // Tỉ lệ chiều rộng so với chiều cao của mỗi phần tử
-                ),
-                itemCount: productsFreeze.length,
-                itemBuilder: (context, index) => ProducForm(
-                  product: productsFreeze[index],
-                  onTap: () => _naviagteToProductsDetails(index),
-                ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CartPage(),
+                    ));
+              },
+              icon: Icon(
+                Icons.shopping_cart,
+                color: primaryColors,
               ),
             ),
           ),
         ],
       ),
+      body: StreamBuilder<List<Products>>(
+        stream: productsStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            List<Products> products = snapshot.data ?? [];
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 18.0,
+                    mainAxisSpacing: 18.0,
+                    childAspectRatio: 0.64,
+                  ),
+                  itemCount: products.length,
+                  itemBuilder: (context, index) => ProductForm(
+                    product: products[index],
+                    onTap: () => _navigateToProductDetails(index, products),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+      ),
+      //bottom bar
+      bottomNavigationBar: BottomNavigationBar(
+          // backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: primaryColors,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndexBottomBar,
+          onTap: _selectedBottomBar,
+          items: [
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(),
+                    ),
+                  );
+                },
+                child: Icon(Icons.home)),
+              label: 'Trang chủ',
+            ),
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                onTap: () {
+                  // Điều hướng đến trang mới ở đây
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ListProductPage(),
+                    ),
+                  );
+                },
+                child: Icon(Icons.local_dining),
+              ),
+              label: 'Sản phẩm',
+            ),
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavoriteProductPage(),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.favorite)),
+              label: 'Yêu thích',
+            ),
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartPage(),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.shopping_cart)),
+              label: 'Giỏ hàng',
+            ),
+            BottomNavigationBarItem(
+              icon: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileUserPage(),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.person)),
+              label: 'Hồ sơ',
+            ),
+          ]),
     );
   }
 }

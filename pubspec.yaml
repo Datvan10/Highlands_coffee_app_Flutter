@@ -40,8 +40,8 @@ dependencies:
   google_fonts: ^6.1.0
   smooth_page_indicator: ^1.1.0
   carousel_slider: ^4.2.1
-  firebase_auth: ^4.10.1
-  firebase_core: ^2.17.0
+  firebase_auth: ^4.15.3
+  firebase_core: ^2.24.2
   intl: ^0.18.1
   speech_to_text: ^6.4.1
   permission_handler: ^11.0.1
@@ -51,6 +51,12 @@ dependencies:
   avatar_glow: ^2.0.2
   firebase_storage: ^11.5.6
   flutter_admin_scaffold: ^1.2.0
+  file_picker: ^6.1.1
+  image_picker: ^1.0.5
+  line_awesome_flutter: ^2.0.0
+  cached_network_image: ^3.3.0
+  fluttertoast: ^8.2.4
+  fl_chart: ^0.66.0
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +91,7 @@ flutter:
     - assets/images/cake/
     - assets/images/bread/
     - assets/images/freeze/
+    - assets/images/profile/
     - assets/images/tea/
     - assets/images/detail/
     - assets/images/ticket/

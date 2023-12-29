@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:highlandcoffeeapp/components/pages/bread_page.dart';
 import 'package:highlandcoffeeapp/components/pages/coffee_page.dart';
 import 'package:highlandcoffeeapp/components/pages/freeze_page.dart';
 import 'package:highlandcoffeeapp/components/pages/other_page.dart';
@@ -32,8 +33,8 @@ class _ProductCategoryState extends State<ProductCategory> {
                   destinationPage: TeaPage(),
                 ),
                 ProductCategoryForm(
-                  titleProduct: 'Bánh ngọt',
-                  destinationPage: SweetCakePage(),
+                  titleProduct: 'Bánh mì',
+                  destinationPage: BreadPage(),
                 ),
                 ProductCategoryForm(
                   titleProduct: 'Khác',

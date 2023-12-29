@@ -1,25 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Products {
-  String imagePath;
-  String imageDetailPath;
-  String name;
-  String description;
-  double oldPrice;
-  double newPrice;
-  String rating;
+  final String id;
+  final String category;
+  final String name;
+  final String description;
+  final double oldPrice;
+  final double newPrice;
+  final String rating;
+  final String imagePath;
+  final String imageDetailPath;
 
-  Products(
-      {required this.name,
-      required this.description,
-      required this.imagePath,
-      required this.imageDetailPath,
-      required this.oldPrice,
-      required this.newPrice,
-      required this.rating});
+  Products({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.oldPrice,
+    required this.newPrice,
+    required this.rating,
+    required this.imagePath,
+    required this.imageDetailPath, required this.category,
+  });
 
-  String get _name => name;
-  double get _oldPrice => oldPrice;
-  double get _newPrice => newPrice;
-  String get _imagePath => imagePath;
-  String get _imageDetailPath => imageDetailPath;
-  String get _rating => rating;
+  // Add a factory method to create a Products instance from a Firestore document
+  factory Products.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Products(
+      id: doc.id,
+      category : data['category'],
+      name: data['name'] ?? '',
+      description: data['description'] ?? '',
+      oldPrice: (data['oldPrice'] as num?)?.toDouble() ?? 0.0,
+      newPrice: (data['newPrice'] as num?)?.toDouble() ?? 0.0,
+      rating: data['rating'] ?? '',
+      imagePath: data['imagePath'] ?? '',
+      imageDetailPath: data['imageDetailPath'] ?? '',
+    );
+  }
 }

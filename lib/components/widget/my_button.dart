@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:highlandcoffeeapp/themes/theme.dart';
 
-class ButtonLoginSigninUp extends StatelessWidget {
+class MyButton extends StatelessWidget {
   final String text;
   final Function()? onTap;
+  final Color buttonColor;
 
-  const ButtonLoginSigninUp(
-      {super.key, required this.text, required this.onTap});
+  const MyButton({Key? key, required this.text, required this.onTap, required this.buttonColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +18,17 @@ class ButtonLoginSigninUp extends StatelessWidget {
         width: double.infinity,
         child: Container(
           decoration: BoxDecoration(
-            color: primaryColors,
-            borderRadius: BorderRadius.circular(40)
+            color: buttonColor, // Sử dụng màu từ tham số
+            borderRadius: BorderRadius.circular(40),
           ),
           child: Center(
             child: Text(
               text,
-              style: GoogleFonts.roboto(color: white, fontWeight: FontWeight.bold, fontSize: 16.0),
+              style: GoogleFonts.roboto(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+              ),
             ),
           ),
         ),
